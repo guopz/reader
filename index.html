@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <title></title>
+    <style>
+        html{
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body{
+            text-align: left;
+            width: 100%;
+            overflow: hidden;
+            background: #e9dfc7;
+        }
+        .m-read-content{
+            font-size: 14px;
+            color: #555;
+            line-height: 31px;
+            padding: 10px;
+        }
+        .m-read-content h4{
+            font-size: 20px;
+            color:#736557;
+            border-bottom: solid 1px #736557;
+            letter-spacing: 2px;
+            margin:0 0 1em 0;
+        }
+        .m-read-content p{
+            text-indent:2em;
+            margin:0.5em 0;
+            letter-spacing: 0;
+            line-height: 24px;
+        }
+        .u-tab{
+            height: 34px;
+            margin: 10px auto;
+            line-height: 34px;
+            border-radius: 3px;
+            border:1px solid #858382;
+            font-size: 12px;
+            background: #000;
+            opacity: 0.9;
+        }
+        .u-tab li{
+            display: inline-block;
+            width: 49%;
+            text-align: center;
+            border-radius: 5px;
+            border-right: 1px solid #fff;
+            color: #fff;
+        }
+        .u-tab li:last-child{border:none;}
+        .m-button-bar{width: 70%;max-width: 800px;padding:5px;margin:10px;margin: 0 auto;}
+        .top-nav{
+            position: fixed;
+            top:0;
+            height: 50px;
+            width: 100%;
+            z-index: 9999;
+            background:rgba(0,0,0,.9);
+        }
+        .icon-back{
+            position: absolute;
+            top:14px;
+            left: 10px;
+            width: 23px;
+            height: 23px;
+            background: url();
+            color: #fff;
+        }
+        .nav-title{
+            position: absolute;
+            color: #fff;
+            top:14px;
+            left: 30px;
+        }
+
+        .button-nav{
+            width: 100%;
+            position: fixed;
+            bottom:0;
+            z-index: 9999;
+        }
+        .u-tab-li{
+            height: 70px;
+            background:rgba(0,0,0,.9);
+        }
+         .u-tab-li li{
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+            color: #fff;
+            line-height: 70px;
+         }
+
+         .nav-pannel{
+            position: fixed;
+            bottom: 70px;
+            height: 135px;
+            width: 100%;
+            background: rgba(0,0,0,.9);
+            z-index: 10000;
+            color:#fff;
+         }
+         .child-mod{
+            padding: 5px 10px;
+            margin: 15px;
+         }
+         .child-mod span{
+            display: inline-block;
+            padding-right: 20px;
+            padding-left: 10px;
+         }
+         .font-size-button{
+            background: none;
+            border:1px solid #8c8c8c;
+            border-radius: 20px;
+            color: #fff;
+            padding: 5px 30px;
+            margin-right: 10px;
+         }
+         .bk-container{
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #fff;
+            display: inline-block;
+            vertical-align: -12px;
+         }
+        .bk-container-current{
+            position: absolute;
+            top:-2px;
+            left:-2px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-block;
+            border:1px solid #ff7800;
+        }
+
+        .artical-action-mid{
+            position: fixed;
+            z-index: 10002;
+            width: 100%;
+            height: 30%;
+            top:30%;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="container">
+        
+        <div class="m-artical-action">
+            <div class="artical-action-mid" id="action_mid"></div>
+        </div>
+        <!-- top -->
+        <div id="top-nav" class="top-nav" style="display:none;">
+            <div class="icon-back"></div>
+            <div class="nav-title">返回书架</div>
+        </div>
+        <!-- buttom -->
+        <div id="button-nav" class="button-nav" style="display:none;">
+            <ul class="u-tab-li">
+                <li>目录</li>
+                <li><span id="font-button">字体</span></li>
+                <li><span id="night-button">白天</span></li>
+            </ul>
+        </div>
+        
+        <div class="nav-pannel" id="font-container" style="display:none;">
+            <div class="child-mod">
+                <span>字号</span>
+                <button id="large-font" class="font-size-button">大</button>
+                <button id="small-font" class="font-size-button">小</button>
+            </div>
+            <div class="child-mod">
+                <span>背景</span>
+                <div class="bk-container">
+                    <div class="bk-container-current"></div>
+                </div>
+            </div>           
+        </div>
+        <!-- end -->
+        <div id="fiction_chapter_title"></div>
+        <div id="fiction_container" class="m-read-content">
+            <!-- todo content -->
+        </div>
+
+        <div class="m-button-bar">
+            <ul class="u-tab">
+                <li id="perv_button">上一章</li>
+                <li id="next_button">下一章</li>
+            </ul>
+        </div>
+    </div>
+    <!-- js -->
+    <script src="lib/zepto.min.js"></script>
+    <script>
+        window.jQuery = $;
+    </script>
+    <script src="js/jquery.base64.js"></script>
+    <script src="js/jquery.jsonp.js"></script>
+    <script>
+        (function(){
+            var Unil = (function(){
+                var prefix = 'html5_reader_';
+                var StorageGetter = function(key){
+                    return localStorage.getItem(prefix+key);
+                }
+                var StorageSetter = function(key,val){
+                    return localStorage.setItem(prefix+key,val);
+                }
+                var getJSONP = function(url,callback){
+                    return $.jsonp({
+                        url:url,
+                        cache:true,
+                        callback:'duokan_fiction_chapter',
+                        success:function(result){
+                            // debugger;
+                            var data = $.base64.decode(result);
+                            var json = decodeURIComponent(escape(data));
+                            callback(json);
+                        }
+                    });
+                }
+                return {
+                    getJSONP:getJSONP,
+                    StorageGetter:StorageGetter,
+                    StorageSetter:StorageSetter
+                }
+            })();
+
+            var Dom = {
+                top_nav:$('#top-nav'),
+                bottom_nav:$('#button-nav'),
+                font_container:$('#font-container')
+            }
+
+            var Win = $(window);
+            var Doc = $(document);
+            var RootContainer = $('#fiction_container');
+            var local = location.pathname;
+            console.log(local);
+           
+            var initFontSize = Unil.StorageGetter('font_size');
+            initFontSize = parseInt(initFontSize);
+            if(!initFontSize){
+                initFontSize = 14;
+            }
+            RootContainer.css('font-size',initFontSize);
+
+            function main(){
+                // todo 整个项目的入口函数
+                var readerModel = ReaderModel();
+                var readerUI = ReaderBaseFrame(RootContainer);
+                readerModel.init(function(data){
+                    readerUI(data);
+                });
+                EvevntHanlder();
+            }
+
+            function ReaderModel(){
+                // todo 实现和阅读器相关的数据交互的方法
+                var Chapter_id;
+                var ChapterTotal;
+                var init = function(UIcallback){
+                    getFictionInfo(function(){
+                        getCurChapterContent(Chapter_id,function(data){
+                            // todo
+                            UIcallback && UIcallback(data);
+                        });
+                    });
+                }
+                var getFictionInfo = function(callback){
+                    $.get('/reader/data/chapter.json',function(data){
+                        // todo 获得章节信息之后的回调
+                           
+                        Chapter_id = data.chapters[1].chapter_id;
+                        ChapterTotal = data.chapters.length;
+                        callback && callback(); 
+                    },'json')
+                }
+                var getCurChapterContent = function(chapter_id,callback){
+                    $.get('/reader/data/data' + chapter_id + '.json',function(data){
+                        if(data.result == 0){
+                            var url = data.jsonp;
+                            Unil.getJSONP(url,function(data){
+                                 debugger;
+                                callback && callback(data);
+                            });
+                        }
+                    },'json');
+                }
+                var prevChapter = function(UIcallback){
+                    chapter_id = parseInt(chapter_id,10);
+                    if(chapter_id == 0){
+                      return;
+                    }
+                    var cid = chapter_id - 1;
+                    getCurChapterContent(cid,UIcallback);
+                }
+                var nextChapter = function(){
+                    chapter_id = parseInt(chapter_id,10);
+                    chapter_id == ChapterTotal ? return : chapter_id;
+                    var cid = chapter_id - 1; 
+                    getCurChapterContent(cid,UIcallback);
+                }
+                return {
+                    init:init,
+                    prevChapter:prevChapter
+                }
+            }
+
+            function ReaderBaseFrame(container){
+                // todo 渲染基本的UI结构
+                function parseChapterData(jsonData){
+                    var jsonObj = JSON.parse(jsonData);
+                    var html = '<h4>'+jsonObj.t+'</h4>';
+                    for(var i=0;i<jsonObj.p.length;i++){
+                        html += '<p>'+jsonObj.p[i]+'</p>'
+                    }
+                    return html;
+                }
+                return function(jsonData){
+                    container.html(parseChapterData(jsonData));
+                }
+            }
+
+            function EvevntHanlder(){
+                // todo 交互的事件绑定
+                // 4.0 click 300ms
+                // 4.4 以后 没有延迟
+                $('#action_mid').click(function(){
+                    if(Dom.top_nav.css('display') == "none"){
+                        Dom.top_nav.show();
+                        Dom.bottom_nav.show();
+                    }else{
+                        Dom.top_nav.hide();
+                        Dom.bottom_nav.hide();
+                        Dom.font_container.hide();
+
+                    }
+                })
+
+                Win.scroll(function() {
+                    Dom.top_nav.hide();
+                    Dom.bottom_nav.hide();
+                    Dom.font_container.hide();
+                });
+
+                $('#font-button').click(function(){
+                    // todo 触发背景切换事件
+                    if(Dom.font_container.css('display') == 'none'){
+                        Dom.font_container.show(); 
+                    } else {
+                        Dom.font_container.hide();
+                    }
+                });
+
+                $('#night-button').click(function(){
+                    // todo 触发背景切换事件
+                });
+
+                $('#large-font').click(function(){
+                    if(initFontSize > 20){
+                        return;
+                    }
+                    initFontSize += 1;
+                    RootContainer.css('font-size',initFontSize);
+                    Unil.StorageSetter('font_size',initFontSize);
+                });
+
+                $('#small-font').click(function(){
+                    if(initFontSize < 12){
+                        return;
+                    }
+                    initFontSize -= 1;
+                    RootContainer.css('font-size',initFontSize);
+                    Unil.StorageSetter('font_size',initFontSize);
+                });
+            }
+
+            main();
+        })()
+    </script>
+</body>
+</html>
